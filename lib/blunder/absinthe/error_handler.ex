@@ -32,6 +32,11 @@ defmodule Blunder.Absinthe.ErrorHandler do
 
       use GenServer
 
+      @impl GenServer
+      def init(args) do
+        {:ok, args}
+      end
+
       def start_link(_ \\ nil) do
         GenServer.start_link(__MODULE__, nil, name: __MODULE__)
       end
