@@ -1,6 +1,6 @@
-# Blunder
+# Blunder.Absinthe
 
-Package for simplifying error representation and handling in an Absinthe application
+Package for simplifying error representation and handling in an Absinthe application using [`Blunder`](https://github.decisiv.net/PlatformServices/blunder)
 
 ## Usage
 
