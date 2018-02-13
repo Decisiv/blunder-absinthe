@@ -14,6 +14,9 @@ defmodule Blunder.Absinthe.Mixfile do
       deps: deps(),
       source_url: repo_url(),
       docs: docs(),
+      aliases: aliases(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test, "ci": :test],
     ]
   end
 
@@ -34,9 +37,12 @@ defmodule Blunder.Absinthe.Mixfile do
     [
       {:absinthe, "~> 1.4"},
       {:blunder, "~> 1.0", organization: "decisiv"},
-      {:bugsnag, "~> 1.3"},
+      {:bugsnag, "~> 1.3", optional: true},
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:ex_doc, "~> 0.18", only: :dev},
+      {:excoveralls, "~> 0.8", only: :test},
+      {:mock, "~> 0.3.0", only: :test},
     ]
   end
 
@@ -56,6 +62,15 @@ defmodule Blunder.Absinthe.Mixfile do
       ],
       links: %{"Github" => repo_url()},
       organization: "decisiv",
+    ]
+  end
+
+  def aliases do
+    [
+      ci: [
+        "coveralls --raise",
+        "credo --strict",
+      ]
     ]
   end
 

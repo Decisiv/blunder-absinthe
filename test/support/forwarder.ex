@@ -8,6 +8,8 @@ defmodule Blunder.Absinthe.Test.Forwarder do
   """
   use GenServer
 
+  def init(args), do: {:ok, args}
+
   def start_link do
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end

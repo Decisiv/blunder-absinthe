@@ -3,6 +3,8 @@ defmodule Blunder.Absinthe do
   Helpers for Absinthe Integration
   """
 
+  alias Absinthe.{Middleware, Resolution}
+
   @doc """
   This function takes an Absinthe middleware stack and adds error handling.
   Each middleware will be wrapped in a `&Blunder.trap_exceptions/2` call and
@@ -16,7 +18,7 @@ defmodule Blunder.Absinthe do
     end
   ```
   """
-  @spec add_error_handling([Absinthe.Middleware.spec, ...]) :: [Absinthe.Middleware.spec, ...]
+  @spec add_error_handling([Middleware.spec, ...]) :: [Middleware.spec, ...]
   def add_error_handling(middleware) do
     Enum.map(middleware, fn spec ->
       fn res, config ->
@@ -27,7 +29,8 @@ defmodule Blunder.Absinthe do
     end) ++ [Blunder.Absinthe.ErrorProcessingMiddleware]
   end
 
-  @spec to_resolver_function(Absinthe.Middleware.spec, Absinthe.Resolution.t, any) :: (() -> Absinthe.Resolution.t)
+  @spec to_resolver_function(Middleware.spec, Resolution.t, any) ::
+    (() -> Resolution.t)
   defp to_resolver_function({{module, function}, config}, res, _config) do
     fn -> apply(module, function, [res, config]) end
   end
@@ -44,7 +47,7 @@ defmodule Blunder.Absinthe do
     fn -> fun.(res, config) end
   end
 
-  @spec resolve_safely((() -> Absinthe.Resolution.t), Absinthe.Resolution.t) :: Absinthe.Resolution.t
+  @spec resolve_safely((() -> Resolution.t), Resolution.t) :: Resolution.t
   defp resolve_safely(fun, res) do
     blunder = %Blunder{
       code: :unexpected_exception,
@@ -53,7 +56,7 @@ defmodule Blunder.Absinthe do
 
     case Blunder.trap_exceptions(fun, blunder: blunder) do
       {:error, error} ->
-        Absinthe.Resolution.put_result(res, {:error, error})
+        Resolution.put_result(res, {:error, error})
       resolution ->
         resolution
     end

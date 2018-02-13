@@ -44,7 +44,6 @@ end
 
 defmodule Blunder.Absinthe.IntegrationTest do
   use ExUnit.Case
-  doctest Blunder
 
   setup do
     Blunder.Absinthe.Test.Forwarder.setup(self())
