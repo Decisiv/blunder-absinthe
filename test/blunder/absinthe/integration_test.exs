@@ -37,8 +37,8 @@ defmodule TestSchema do
     end
   end
 
-  def middleware(middleware, _field, _object) do
-    Blunder.Absinthe.add_error_handling(middleware)
+  def middleware(middleware, field, _object) do
+    Blunder.Absinthe.add_error_handling(middleware, field)
   end
 end
 
