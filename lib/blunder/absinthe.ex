@@ -39,6 +39,10 @@ defmodule Blunder.Absinthe do
     fn -> apply(module, :call, [res, config]) end
   end
 
+  defp to_resolver_function(module, res, config) when is_atom(module) do
+    fn -> apply(module, :call, [res, config]) end
+  end
+
   defp to_resolver_function(fun, res, _config) when is_function(fun, 1) do
     fn -> fun.(res) end
   end
