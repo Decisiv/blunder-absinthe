@@ -75,7 +75,7 @@ end
 Then in your config...
 
 ```elixir
-config :blunder, error_handers: [ LogError ]
+config :blunder, error_handlers: [ LogError ]
 ```
 
 Blunder ships with Error Handlers for [BugSnag](lib/blunder/absinthe/error_handler/bug_snag.ex) and [logging](lib/blunder/absinthe/error_handler/log_error.ex) that you can use right out of the box.

@@ -40,6 +40,7 @@ defmodule Blunder.Absinthe.Mixfile do
       {:blunder, "~> 1.0", organization: "decisiv"},
       {:bugsnag, "~> 1.3", optional: true},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:dataloader, "~> 1.0", optional: true},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:ex_doc, "~> 0.18", only: :dev},
       {:excoveralls, "~> 0.8", only: :test},

@@ -61,6 +61,17 @@ defmodule Blunder.AbsintheTest do
       } = wrapped_middleware.(%Absinthe.Resolution{}, :ignored)
     end
 
+    test "module specs" do
+      [wrapped_middleware | _] = add_error_handling([TestMiddleware])
+
+      assert %Absinthe.Resolution{
+        value: %{
+          func: "call",
+          config: %{a: 1}
+        }
+      } = wrapped_middleware.(%Absinthe.Resolution{}, %{a: 1})
+    end
+
     test "&fun/2 specs" do
       [wrapped_middleware | _] = add_error_handling([&TestMiddleware.call/2], @field)
 
