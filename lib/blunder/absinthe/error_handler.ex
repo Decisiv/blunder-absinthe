@@ -20,7 +20,7 @@ defmodule Blunder.Absinthe.ErrorHandler do
   Then in your config...
   
   ```elixir
-  config :blunder, error_handers: [ LogError ]
+  config :blunder, error_handlers: [ LogError ]
   ```
   """
 

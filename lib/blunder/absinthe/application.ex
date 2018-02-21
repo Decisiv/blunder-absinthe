@@ -6,12 +6,12 @@ defmodule Blunder.Absinthe.Application do
 
   def start(_type, _args) do
     ErrorHandlerSupervisor.start_link(
-      Application.get_env(:blunder, :error_handers)
+      error_handlers()
     )
   end
 
   defp error_handlers do
-    Application.get_env(:blunder, :error_handers, default_error_handlers())
+    Application.get_env(:blunder, :error_handlers, default_error_handlers())
   end
 
   defp default_error_handlers do

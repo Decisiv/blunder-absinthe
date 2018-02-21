@@ -41,7 +41,7 @@ defmodule Blunder.AbsintheTest do
     end
 
     test "module specs" do
-      [wrapped_middleware | _] = add_error_handling([TestMiddleware], @field)
+      [wrapped_middleware | _] = add_error_handling([TestMiddleware])
 
       assert %Absinthe.Resolution{
         value: %{
