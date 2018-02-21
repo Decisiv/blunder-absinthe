@@ -17,7 +17,7 @@ defmodule Blunder.Absinthe.Mixfile do
       aliases: aliases(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test, "ci": :test],
-      dialyzer: [ignore_warnings: ".dialyzer_ignore"],
+      dialyzer: [plt_add_deps: :transitive],
     ]
   end
 
