@@ -18,15 +18,25 @@ defmodule Blunder.Absinthe do
     end
   ```
   """
-  @spec add_error_handling([Middleware.spec, ...]) :: [Middleware.spec, ...]
-  def add_error_handling(middleware) do
-    Enum.map(middleware, fn spec ->
-      fn res, config ->
-        spec
-        |> to_resolver_function(res, config)
-        |> resolve_safely(res)
-      end
-    end) ++ [Blunder.Absinthe.ErrorProcessingMiddleware]
+  @spec add_error_handling([Middleware.spec, ...], any) :: [Middleware.spec, ...]
+  def add_error_handling(middleware, field)
+  when is_list(middleware) do
+    Enum.map(
+      middleware,
+      &add_error_handling(&1, field)
+    ) ++ [Blunder.Absinthe.ErrorProcessingMiddleware]
+  end
+
+  def add_error_handling({Absinthe.Middleware.MapGet, attr} = spec, %{identifier: attr}) do
+    spec
+  end
+
+  def add_error_handling(spec, _field) do
+    fn res, config ->
+      spec
+      |> to_resolver_function(res, config)
+      |> resolve_safely(res)
+    end
   end
 
   @spec to_resolver_function(Middleware.spec, Resolution.t, any) ::

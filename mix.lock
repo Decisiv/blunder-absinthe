@@ -1,6 +1,6 @@
 %{
   "absinthe": {:hex, :absinthe, "1.4.7", "c92411307e01d0193f2eafc0d6e28273e476f66d5d20e031f879ce1fec0ad9e3", [:mix], [{:dataloader, "~> 1.0.0", [hex: :dataloader, repo: "hexpm", optional: true]}, {:decimal, "~> 1.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm"},
-  "blunder": {:hex, :blunder, "1.0.0", "d04ce4a76b91fc3f3504425f7194281c96bdac8b18a2856cca98a36b9780afeb", [:mix], [{:wormhole, "~> 2.1", [hex: :wormhole, repo: "hexpm", optional: false]}], "hexpm:decisiv"},
+  "blunder": {:hex, :blunder, "1.0.0", "d6f3051e93dad27f0a1d054cb4b6e469f04f2f9afc87f9f82c0aca4668ccb2b9", [:mix], [{:wormhole, "~> 2.1", [hex: :wormhole, repo: "hexpm", optional: false]}], "hexpm:decisiv"},
   "bugsnag": {:hex, :bugsnag, "1.5.0", "e761b3c4c198d01d4b04b85298ea7756632c70610ed0b1a57f04c2f528a3e3ab", [:mix], [{:httpoison, "~> 0.9", [hex: :httpoison, repo: "hexpm", optional: false]}, {:poison, "~> 1.5 or ~> 2.0 or ~> 3.0", [hex: :poison, repo: "hexpm", optional: false]}], "hexpm"},
   "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], [], "hexpm"},
   "certifi": {:hex, :certifi, "2.0.0", "a0c0e475107135f76b8c1d5bc7efb33cd3815cb3cf3dea7aefdd174dabead064", [:rebar3], [], "hexpm"},
