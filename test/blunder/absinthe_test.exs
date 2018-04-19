@@ -19,7 +19,7 @@ defmodule Blunder.AbsintheTest do
 
   @field %Absinthe.Type.Field{identifier: :some_field}
 
-  describe "&add_error_handling/1" do
+  describe "&add_error_handling/2" do
     test "default resolver not altered" do
       default_middleware = {Absinthe.Middleware.MapGet, @field.identifier}
       assert [^default_middleware | _] = add_error_handling([default_middleware], @field)
@@ -96,7 +96,7 @@ defmodule Blunder.AbsintheTest do
 
     test "&add_error_handling/1 with Absinthe.Middleware.Async middleware" do
       opts = [foo: :bar]
-      config = fn (_, _, _) -> {:middleware, Absinthe.Middleware.Async, {&crush_call/0, opts }} end
+      config = fn (_, _, _) -> {:middleware, Absinthe.Middleware.Async, {&crash_call/0, opts }} end
       [wrapped_middleware | _] = add_error_handling([{{Absinthe.Resolution, :call}, config}], @field)
 
       assert %Absinthe.Resolution{middleware: [{Absinthe.Middleware.Async, {fun, ^opts}}]}
@@ -112,7 +112,7 @@ defmodule Blunder.AbsintheTest do
     end
   end
 
-  defp crush_call() do
+  defp crash_call() do
     raise "Unexpected Error"
   end
 end

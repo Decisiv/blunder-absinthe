@@ -77,8 +77,8 @@ defmodule Blunder.Absinthe do
   end
 
   defp to_safe_async_middleware(%Absinthe.Resolution{middleware: middleware} = resolution) do
-    dicorated = Enum.map(middleware, &decorate_async_middleware/1)
-    %{resolution | middleware: dicorated}
+    decorated = Enum.map(middleware, &decorate_async_middleware/1)
+    %{resolution | middleware: decorated}
   end
 
   defp decorate_async_middleware({Absinthe.Middleware.Async, {fun, opts}}) do
