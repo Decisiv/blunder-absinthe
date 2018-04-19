@@ -35,6 +35,7 @@ defmodule Blunder.Absinthe do
     fn res, config ->
       spec
       |> to_resolver_function(res, config)
+      |> to_safely_async()
       |> resolve_safely(res)
     end
   end
@@ -63,16 +64,32 @@ defmodule Blunder.Absinthe do
 
   @spec resolve_safely((() -> Resolution.t), Resolution.t) :: Resolution.t
   defp resolve_safely(fun, res) do
-    blunder = %Blunder{
-      code: :unexpected_exception,
-      summary: "The application encountered an unexpected exception",
-    }
-
-    case Blunder.trap_exceptions(fun, blunder: blunder) do
+    case Blunder.trap_exceptions(fun, blunder: blunder()) do
       {:error, error} ->
         Resolution.put_result(res, {:error, error})
       resolution ->
         resolution
     end
+  end
+
+  defp to_safely_async(fun) do
+    fn -> fun.() |> to_safe_async_middleware() end
+  end
+
+  defp to_safe_async_middleware(%Absinthe.Resolution{middleware: middleware} = resolution) do
+    dicorated = Enum.map(middleware, &decorate_async_middleware/1)
+    %{resolution | middleware: dicorated}
+  end
+
+  defp decorate_async_middleware({Absinthe.Middleware.Async, {fun, opts}}) do
+    {Absinthe.Middleware.Async, {fn -> Blunder.trap_exceptions(fun, blunder: blunder()) end, opts}}
+  end
+  defp decorate_async_middleware(middleware), do: middleware
+
+  defp blunder do
+    %Blunder{
+      code: :unexpected_exception,
+      summary: "The application encountered an unexpected exception",
+    }
   end
 end
