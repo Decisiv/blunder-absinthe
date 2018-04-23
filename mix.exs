@@ -5,7 +5,7 @@ defmodule Blunder.Absinthe.Mixfile do
     [
       app: :blunder_absinthe,
       name: "Blunder.Absinthe",
-      version: "1.0.1",
+      version: "1.1.1",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env),
       start_permanent: Mix.env == :prod,

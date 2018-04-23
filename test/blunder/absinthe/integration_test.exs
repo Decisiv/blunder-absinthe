@@ -35,6 +35,22 @@ defmodule TestSchema do
     field :test_query, :test_query_results do
       resolve fn _, _ -> {:ok, %{}} end
     end
+
+    field :test_async_query_arity_3, :test_query_results do
+      resolve fn _, _, _ ->
+        async(fn ->
+          raise "Unexpected Error"
+        end)
+      end
+    end
+
+    field :test_async_query_arity_2, :test_query_results do
+      resolve fn _, _ ->
+        async(fn ->
+          raise "Unexpected Error"
+        end)
+      end
+    end
   end
 
   def middleware(middleware, field, _object) do
@@ -130,6 +146,21 @@ defmodule Blunder.Absinthe.IntegrationTest do
       },
       details: "details",
     ]
+  end
+
+  test "Blunders rendered as graphql errors when async resolver fails" do
+    ["test_async_query_arity_3", "test_async_query_arity_3"]
+    |> Enum.each(fn query ->
+      test_query_error "{ #{query} { success } }", [
+        error: %{
+          title: "Unexpected Exception",
+          code: :unexpected_exception,
+          message: "The application encountered an unexpected exception",
+        },
+        details: "Blunder trapped exception",
+        original_error: %RuntimeError{message: "Unexpected Error"}
+      ]
+    end)
   end
 
   describe "detailed error responses" do
