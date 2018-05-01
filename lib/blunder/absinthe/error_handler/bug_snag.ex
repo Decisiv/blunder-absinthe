@@ -10,7 +10,7 @@ if Code.ensure_loaded(Bugsnag) do
     @spec call(Blunder.t) :: (:ok | {:error, any})
     def call(blunder) do
       Bugsnag.report(
-        blunder.original_error || blunder,
+        original_error(blunder.original_error) || blunder,
         context: (if !blunder.stacktrace, do: blunder.code),
         metadata: bugsnag_metadata(blunder),
         severity: bugsnag_severity(blunder),
@@ -36,5 +36,8 @@ if Code.ensure_loaded(Bugsnag) do
       |> Map.from_struct
       |> Map.take([:code, :summary, :details, :severity])
     end
+
+    defp original_error({:error, error}), do: error
+    defp original_error(error), do: error
   end
 end

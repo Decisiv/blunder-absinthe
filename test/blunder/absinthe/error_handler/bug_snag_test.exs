@@ -22,5 +22,14 @@ if Code.ensure_loaded?(Bugsnag) do
         blunder, context: :code, metadata: :_, severity: "error", stacktrace: blunder.stacktrace
       )
     end
+
+    test_with_mock "reports to Bugsnag with an original error when original error is a tuple",
+                   Bugsnag, [report: fn (_, _) -> :ok end] do
+      blunder = %Blunder{severity: :error, code: :code, original_error: {:error, "unexpected"}}
+      Blunder.Absinthe.ErrorHandler.BugSnag.call(blunder)
+      assert called Bugsnag.report(
+        elem(blunder.original_error, 1), context: :code, metadata: :_, severity: "error", stacktrace: blunder.stacktrace
+      )
+    end
   end
 end
