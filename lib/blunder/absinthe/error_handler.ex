@@ -3,22 +3,22 @@ defmodule Blunder.Absinthe.ErrorHandler do
   Behaviour for a module that handles Blunder errors in the Blunder.Absinthe middleware
 
   Creating an error handler is as simple as this:
-  
+
   ```elixir
   defmodule LogError do
     use Blunder.Absinthe.ErrorHandler
     require Logger
-  
+
     @impl Blunder.Absinthe.ErrorHandler
     def call(blunder) do
       Logger.error blunder.message
     end
-  
+
   end
   ```
-  
+
   Then in your config...
-  
+
   ```elixir
   config :blunder, error_handlers: [ LogError ]
   ```

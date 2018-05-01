@@ -5,18 +5,24 @@ if Code.ensure_loaded(Bugsnag) do
     """
     use Blunder.Absinthe.ErrorHandler
     require Logger
+    @opts Application.get_env(:blunder, Blunder.Absinthe.ErrorHandler.BugSnag)
 
     @impl Blunder.Absinthe.ErrorHandler
     @spec call(Blunder.t) :: (:ok | {:error, any})
-    def call(blunder) do
-      Bugsnag.report(
+
+    def call(%Blunder{severity: s} = blunder) do
+      ignore = Keyword.get(@opts, :ignore_severities, [])
+      if Enum.member?(ignore, s) do
+        {:ok, :ignored}
+      else
+        Bugsnag.report(
         bugsnag_excpetion(blunder),
         context: (if !blunder.stacktrace, do: blunder.code),
         metadata: bugsnag_metadata(blunder),
-        severity: bugsnag_severity(blunder),
-        stacktrace: blunder.stacktrace
-      )
-      :ok
+        severity: bugsnag_severity(blunder)
+        )
+        :ok
+      end
     end
 
     @spec bugsnag_severity(Blunder.t) :: binary
