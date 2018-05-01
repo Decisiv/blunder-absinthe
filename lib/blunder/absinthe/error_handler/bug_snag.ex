@@ -10,10 +10,11 @@ if Code.ensure_loaded(Bugsnag) do
     @spec call(Blunder.t) :: (:ok | {:error, any})
     def call(blunder) do
       Bugsnag.report(
-        blunder,
+        blunder.original_error,
         context: (if !blunder.stacktrace, do: blunder.code),
         metadata: bugsnag_metadata(blunder),
-        severity: bugsnag_severity(blunder)
+        severity: bugsnag_severity(blunder),
+        stacktrace: blunder.stacktrace
       )
       :ok
     end
