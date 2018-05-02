@@ -43,7 +43,7 @@ if Code.ensure_loaded?(Bugsnag) do
       assert Blunder.Absinthe.ErrorHandler.BugSnag.call(blunder) == :error
     end
 
-    describe "ignore severities" do
+    describe "ignore severities below threshold" do
       test_with_mock "test no report is sent to bugsnag", Bugsnag, [sync_report: fn (_, _) -> :ok end] do
         blunder = %Blunder{severity: :debug, code: :code}
         Blunder.Absinthe.ErrorHandler.BugSnag.call(blunder)
