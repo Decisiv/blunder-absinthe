@@ -8,25 +8,16 @@ if Code.ensure_loaded(Bugsnag) do
     require Logger
 
     @impl Blunder.Absinthe.ErrorHandler
-<<<<<<< HEAD
     @spec call(Blunder.t) :: (:ok | {:error, any})
 
-    def call(%Blunder{severity: s} = blunder) do
-      ignore = Keyword.get(@opts, :ignore_severities, [])
-      if Enum.member?(ignore, s) do
-        {:ok, :ignored}
-      else
-        Bugsnag.report(
-        bugsnag_excpetion(blunder),
-=======
     def call(blunder, opts \\ []) do
       if should_report?(blunder, opts) do
         Bugsnag.sync_report(
-        blunder,
->>>>>>> [MICAEG-289] - refactor configurable options depending on threshold
+        bugsnag_exception(blunder),
         context: (if !blunder.stacktrace, do: blunder.code),
         metadata: bugsnag_metadata(blunder),
-        severity: bugsnag_severity(blunder)
+        severity: bugsnag_severity(blunder),
+        stacktrace: blunder.stacktrace
         )
       else
         :ok
@@ -65,8 +56,8 @@ if Code.ensure_loaded(Bugsnag) do
       |> Map.take([:code, :summary, :details, :severity])
     end
 
-    defp bugsnag_excpetion(%Blunder{original_error: {:error, original_error}}), do: original_error
-    defp bugsnag_excpetion(%Blunder{original_error: nil} = blunder), do: blunder
-    defp bugsnag_excpetion(%Blunder{original_error: original_error}), do: original_error
+    defp bugsnag_exception(%Blunder{original_error: {:error, original_error}}), do: original_error
+    defp bugsnag_exception(%Blunder{original_error: nil} = blunder), do: blunder
+    defp bugsnag_exception(%Blunder{original_error: original_error}), do: original_error
   end
 end

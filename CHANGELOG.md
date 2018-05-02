@@ -26,7 +26,7 @@ First public release
 ### Changed
 - Exception handling no longer added around the default `MapGet` resolver middleware. This gives a dramatic performance improvement.
 ### Added
-- `Blunder.Absinthe.Dataloader.SafeKV` added to provide excpetion handling in KV Dataloaders
+- `Blunder.Absinthe.Dataloader.SafeKV` added to provide exception handling in KV Dataloaders
 ### Fixed
 - Absinthe middleware can be specified in the middleware list by a bare module name (atom). We were not handling this case in `add_error_handling`
 - Just adding blunder-absinthe to your mixfile caused runtime errors since there was no default error handler list. Making `LogError` the default.

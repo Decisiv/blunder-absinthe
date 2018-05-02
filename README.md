@@ -14,7 +14,7 @@ Add Blunder error handling to your resolvers by letting Blunder wrap your middle
   end
 ```
 
-This will catch all excpetions as well as provide special handling for any `%Blunder{}` errors returned from resolver functions.
+This will catch all exceptions as well as provide special handling for any `%Blunder{}` errors returned from resolver functions.
 
 ### Start returning Blunder Errors
 
