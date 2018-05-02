@@ -2,7 +2,8 @@ if Code.ensure_loaded(Bugsnag) do
   defmodule Blunder.Absinthe.ErrorHandler.BugSnag do
     @moduledoc """
     Error handler that logs errors using Logger
-    configurable within the config depending on threshold
+    configurable within the config/config.exs on what should be notified
+    depending on threshold
     """
     use Blunder.Absinthe.ErrorHandler
     require Logger
