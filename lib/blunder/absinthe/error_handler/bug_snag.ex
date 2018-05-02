@@ -13,11 +13,11 @@ if Code.ensure_loaded(Bugsnag) do
     def call(blunder, opts \\ []) do
       if should_report?(blunder, opts) do
         Bugsnag.sync_report(
-        bugsnag_exception(blunder),
-        context: (if !blunder.stacktrace, do: blunder.code),
-        metadata: bugsnag_metadata(blunder),
-        severity: bugsnag_severity(blunder),
-        stacktrace: blunder.stacktrace
+          bugsnag_exception(blunder),
+          context: (if !blunder.stacktrace, do: blunder.code),
+          metadata: bugsnag_metadata(blunder),
+          severity: bugsnag_severity(blunder),
+          stacktrace: blunder.stacktrace
         )
       else
         :ok
