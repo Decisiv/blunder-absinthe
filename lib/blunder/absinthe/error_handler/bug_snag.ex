@@ -2,12 +2,13 @@ if Code.ensure_loaded(Bugsnag) do
   defmodule Blunder.Absinthe.ErrorHandler.BugSnag do
     @moduledoc """
     Error handler that logs errors using Logger
+    configurable within the config depending on threshold
     """
     use Blunder.Absinthe.ErrorHandler
     require Logger
-    @opts Application.get_env(:blunder, Blunder.Absinthe.ErrorHandler.BugSnag)
 
     @impl Blunder.Absinthe.ErrorHandler
+<<<<<<< HEAD
     @spec call(Blunder.t) :: (:ok | {:error, any})
 
     def call(%Blunder{severity: s} = blunder) do
@@ -17,10 +18,17 @@ if Code.ensure_loaded(Bugsnag) do
       else
         Bugsnag.report(
         bugsnag_excpetion(blunder),
+=======
+    def call(blunder, opts \\ []) do
+      if should_report?(blunder, opts) do
+        Bugsnag.sync_report(
+        blunder,
+>>>>>>> [MICAEG-289] - refactor configurable options depending on threshold
         context: (if !blunder.stacktrace, do: blunder.code),
         metadata: bugsnag_metadata(blunder),
         severity: bugsnag_severity(blunder)
         )
+      else
         :ok
       end
     end
@@ -34,6 +42,20 @@ if Code.ensure_loaded(Bugsnag) do
         :error -> "error"
         :critical -> "error"
         _ -> "error"
+      end
+    end
+
+    defp should_report?(blunder, opts) do
+      severity_numerical_value(blunder.severity) >= severity_numerical_value(Keyword.get(opts, :threshold, :error))
+    end
+
+    defp severity_numerical_value(severity) do
+      case severity do
+        :debug -> 0
+        :info -> 1
+        :warn -> 2
+        :error -> 3
+        :critical -> 4
       end
     end
 

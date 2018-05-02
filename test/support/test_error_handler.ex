@@ -5,7 +5,7 @@ defmodule Blunder.Absinthe.Test.ErrorHandler do
   use Blunder.Absinthe.ErrorHandler
 
   @impl Blunder.Absinthe.ErrorHandler
-  def call(blunder) do
+  def call(blunder, _opts) do
     Blunder.Absinthe.Test.Forwarder.send({:error_handler_called, blunder})
   end
 end

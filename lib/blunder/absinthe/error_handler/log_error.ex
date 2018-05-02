@@ -6,7 +6,7 @@ defmodule Blunder.Absinthe.ErrorHandler.LogError do
   require Logger
 
   @impl Blunder.Absinthe.ErrorHandler
-  def call(blunder) do
+  def call(blunder, _opts \\ []) do
     blunder
     |> Blunder.format
     |> log(log_lvl(blunder))

@@ -4,8 +4,6 @@ if Code.ensure_loaded?(Bugsnag) do
     doctest Blunder.Absinthe.ErrorHandler.BugSnag
 
     import Mock
-
-<<<<<<< HEAD
     test_with_mock "reports to Bugsnag with an original error when original error exists",
                    Bugsnag, [report: fn (_, _) -> :ok end] do
       blunder = %Blunder{severity: :error, code: :code, original_error: "unexpected"}
