@@ -11,4 +11,3 @@ defmodule Blunder.Absinthe.ErrorHandler.LogErrorTest do
     end) =~ "the summary"
   end
 end
-

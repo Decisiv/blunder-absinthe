@@ -2,20 +2,35 @@ if Code.ensure_loaded(Bugsnag) do
   defmodule Blunder.Absinthe.ErrorHandler.BugSnag do
     @moduledoc """
     Error handler that logs errors using Logger
+
+    ErrorHandler for BugSnag is configureable inside of the config/config.exs on
+    what level errors should blunder to be sent to BugSnag. The below code can be added to send
+    notifications at or above a certain threshold. The default threshold is set to :error.
+
+    ```elixir
+    config :blunder, error_handlers: [
+      {Blunder.Absinthe.ErrorHandler.BugSnag, [threshold: :error]}
+    ]
+    ```
     """
     use Blunder.Absinthe.ErrorHandler
     require Logger
 
     @impl Blunder.Absinthe.ErrorHandler
     @spec call(Blunder.t) :: (:ok | {:error, any})
-    def call(blunder) do
-      Bugsnag.report(
-        blunder,
-        context: (if !blunder.stacktrace, do: blunder.code),
-        metadata: bugsnag_metadata(blunder),
-        severity: bugsnag_severity(blunder)
-      )
-      :ok
+
+    def call(blunder, opts \\ []) do
+      if should_report?(blunder, opts) do
+        Bugsnag.sync_report(
+          bugsnag_exception(blunder),
+          context: (if !blunder.stacktrace, do: blunder.code),
+          metadata: bugsnag_metadata(blunder),
+          severity: bugsnag_severity(blunder),
+          stacktrace: blunder.stacktrace
+        )
+      else
+        :ok
+      end
     end
 
     @spec bugsnag_severity(Blunder.t) :: binary
@@ -30,10 +45,28 @@ if Code.ensure_loaded(Bugsnag) do
       end
     end
 
+    defp should_report?(blunder, opts) do
+      severity_numerical_value(blunder.severity) >= severity_numerical_value(Keyword.get(opts, :threshold, :error))
+    end
+
+    defp severity_numerical_value(severity) do
+      case severity do
+        :debug -> 0
+        :info -> 1
+        :warn -> 2
+        :error -> 3
+        :critical -> 4
+      end
+    end
+
     defp bugsnag_metadata(blunder) do
       blunder
       |> Map.from_struct
-      |> Map.take([:code, :summary, :details, :severity, :original_error])
+      |> Map.take([:code, :summary, :details, :severity])
     end
+
+    defp bugsnag_exception(%Blunder{original_error: {:error, original_error}}), do: original_error
+    defp bugsnag_exception(%Blunder{original_error: nil} = blunder), do: blunder
+    defp bugsnag_exception(%Blunder{original_error: original_error}), do: original_error
   end
 end
