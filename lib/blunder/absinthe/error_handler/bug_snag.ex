@@ -2,8 +2,16 @@ if Code.ensure_loaded(Bugsnag) do
   defmodule Blunder.Absinthe.ErrorHandler.BugSnag do
     @moduledoc """
     Error handler that logs errors using Logger
-    configurable within the config/config.exs on what should be notified
-    depending on threshold
+
+    ErrorHandler for BugSnag is configureable inside of the config/config.exs on
+    what level errors should blunder to be sent to BugSnag. The below code can be added to send
+    notifications at or above a certain threshold. The default threshold is set to :error.
+
+    ```elixir
+    config :blunder, error_handlers: [
+      {Blunder.Absinthe.ErrorHandler.BugSnag, [threshold: :error]}
+    ]
+    ```
     """
     use Blunder.Absinthe.ErrorHandler
     require Logger

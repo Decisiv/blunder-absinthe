@@ -33,7 +33,7 @@ In order to simplify the creation of these error structs you're encouraged to cr
 defmodule MyApp.Errors do
   import Blunder.Errors
 
-  deferror :flagrant_system_error, 
+  deferror :flagrant_system_error,
     message: "MUCH ERRORZ!",
     severity: :critical
 
