@@ -25,6 +25,7 @@ defmodule Blunder.Absinthe.ErrorHandler do
   """
 
   @callback call(Blunder.t, any) :: (:ok | {:error, any})
+  @callback call(Blunder.t) :: (:ok | {:error, any})
 
   defmacro __using__(_opts \\ []) do
     quote do
