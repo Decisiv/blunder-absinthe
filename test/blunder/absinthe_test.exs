@@ -9,6 +9,10 @@ defmodule TestMiddleware do
   def call2(resolution, config) do
     resolution |> put_result({:ok, %{func: "call2", config: config}})
   end
+
+  def time_out_call(_resolution, _config) do
+    :timer.sleep(20)
+  end
 end
 
 defmodule Blunder.AbsintheTest do
@@ -47,6 +51,20 @@ defmodule Blunder.AbsintheTest do
           func: "call2",
           config: %{a: 1}
         }
+      } = wrapped_middleware.(%Absinthe.Resolution{}, :ignored)
+    end
+
+    test "{{module, function}, config} specs with cofigured timeout " do
+      [wrapped_middleware | _] =
+        add_error_handling([{{TestMiddleware, :time_out_call}, %{a: 1}}], @field, timeout_ms: 10)
+
+      assert %Absinthe.Resolution{
+        errors: [
+          %Blunder{
+            code: :unexpected_exception,
+            details: "funcation passed to trap_exceptions exceeded timeout of 10 ms",
+          }
+        ]
       } = wrapped_middleware.(%Absinthe.Resolution{}, :ignored)
     end
 
@@ -94,7 +112,7 @@ defmodule Blunder.AbsintheTest do
       } = wrapped_middleware.(%Absinthe.Resolution{}, :ignored)
     end
 
-    test "&add_error_handling/1 with Absinthe.Middleware.Async middleware" do
+    test "&add_error_handling/2 with Absinthe.Middleware.Async middleware" do
       opts = [foo: :bar]
       config = fn (_, _, _) -> {:middleware, Absinthe.Middleware.Async, {&crash_call/0, opts }} end
       [wrapped_middleware | _] = add_error_handling([{{Absinthe.Resolution, :call}, config}], @field)
@@ -110,9 +128,27 @@ defmodule Blunder.AbsintheTest do
         }
       }} = fun.()
     end
+
+    test "&add_error_handling/2 with Absinthe.Middleware.Async and cofigured timeout" do
+      opts = [foo: :bar]
+      config = fn (_, _, _) -> {:middleware, Absinthe.Middleware.Async, {&time_out_call/0, opts }} end
+      [wrapped_middleware | _] = add_error_handling([{{Absinthe.Resolution, :call}, config}], @field, timeout_ms: 10)
+
+      assert %Absinthe.Resolution{middleware: [{Absinthe.Middleware.Async, {fun, ^opts}}]}
+             = wrapped_middleware.(%Absinthe.Resolution{}, :unresolved)
+
+      assert {:error, %Blunder{
+        code: :unexpected_exception,
+        details: "funcation passed to trap_exceptions exceeded timeout of 10 ms",
+      }} = fun.()
+    end
   end
 
   defp crash_call() do
     raise "Unexpected Error"
+  end
+
+  defp time_out_call() do
+    :timer.sleep(30)
   end
 end

@@ -13,30 +13,35 @@ defmodule Blunder.Absinthe do
 
   Call it in your Schema in your `&middleware/3` callback like this:
   ```elixir
-    def middleware(middleware, _field, _object) do
-      Blunder.Absinthe.add_error_handling(middleware)
+    def middleware(middleware, field, _object) do
+      Blunder.Absinthe.add_error_handling(middleware, field, timeout_ms: 3_000)
     end
   ```
   """
-  @spec add_error_handling([Middleware.spec, ...], any) :: [Middleware.spec, ...]
-  def add_error_handling(middleware, field)
-  when is_list(middleware) do
+  @spec add_error_handling(
+    [Middleware.spec, ...],
+    any,
+    opts :: [timeout_ms: number]
+  ) :: [Middleware.spec, ...]
+  def add_error_handling(middleware, field, opts \\ [])
+  def add_error_handling(middleware, field, opts)
+      when is_list(middleware) do
     Enum.map(
       middleware,
-      &add_error_handling(&1, field)
+      &add_error_handling(&1, field, opts)
     ) ++ [Blunder.Absinthe.ErrorProcessingMiddleware]
   end
 
-  def add_error_handling({Absinthe.Middleware.MapGet, attr} = spec, %{identifier: attr}) do
+  def add_error_handling({Absinthe.Middleware.MapGet, attr} = spec, %{identifier: attr}, _opts) do
     spec
   end
 
-  def add_error_handling(spec, _field) do
+  def add_error_handling(spec, _field, opts) do
     fn res, config ->
       spec
       |> to_resolver_function(res, config)
-      |> to_safely_async()
-      |> resolve_safely(res)
+      |> to_safely_async(opts)
+      |> resolve_safely(res, opts)
     end
   end
 
@@ -62,9 +67,13 @@ defmodule Blunder.Absinthe do
     fn -> fun.(res, config) end
   end
 
-  @spec resolve_safely((() -> Resolution.t), Resolution.t) :: Resolution.t
-  defp resolve_safely(fun, res) do
-    case Blunder.trap_exceptions(fun, blunder: blunder()) do
+  @spec resolve_safely(
+    (() -> Resolution.t),
+    Resolution.t,
+    opts :: [timeout_ms: number]
+  ) :: Resolution.t
+  defp resolve_safely(fun, res, opts) do
+    case Blunder.trap_exceptions(fun, Keyword.merge(opts, blunder: blunder())) do
       {:error, error} ->
         Resolution.put_result(res, {:error, error})
       resolution ->
@@ -72,19 +81,22 @@ defmodule Blunder.Absinthe do
     end
   end
 
-  defp to_safely_async(fun) do
-    fn -> fun.() |> to_safe_async_middleware() end
+  defp to_safely_async(fun, opts) do
+    fn -> fun.() |> to_safe_async_middleware(opts) end
   end
 
-  defp to_safe_async_middleware(%Absinthe.Resolution{middleware: middleware} = resolution) do
-    decorated = Enum.map(middleware, &decorate_async_middleware/1)
+  defp to_safe_async_middleware(%Absinthe.Resolution{middleware: middleware} = resolution, opts) do
+    decorated = Enum.map(middleware, &(decorate_async_middleware(&1, opts)))
     %{resolution | middleware: decorated}
   end
 
-  defp decorate_async_middleware({Absinthe.Middleware.Async, {fun, opts}}) do
-    {Absinthe.Middleware.Async, {fn -> Blunder.trap_exceptions(fun, blunder: blunder()) end, opts}}
+  defp decorate_async_middleware({Absinthe.Middleware.Async, {fun, fun_opts}}, opts) do
+    {
+      Absinthe.Middleware.Async,
+      {fn -> Blunder.trap_exceptions(fun, Keyword.merge(opts, blunder: blunder())) end, fun_opts}
+    }
   end
-  defp decorate_async_middleware(middleware), do: middleware
+  defp decorate_async_middleware(middleware, _opts), do: middleware
 
   defp blunder do
     %Blunder{
