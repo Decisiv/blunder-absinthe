@@ -82,6 +82,6 @@ defmodule Blunder.Absinthe.Mixfile do
     """
   end
 
-  defp repo_url, do: "https://github.decisiv.net/PlatformServices/blunder-absinthe"
+  defp repo_url, do: "https://github.com/Decisiv/blunder-absinthe"
 
 end
