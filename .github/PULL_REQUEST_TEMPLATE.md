@@ -4,9 +4,6 @@ _Explain what your PR does here_
 #### Why?
 _Why are we adding this code_
 
-#### What are the relevant tickets?
-[AEG-X](https://decisiv.atlassian.net/browse/AEG-X)
-
 #### PR Dependencies
 _If your PR has any dependencies list them here_
 
