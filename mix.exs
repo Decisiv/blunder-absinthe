@@ -37,7 +37,7 @@ defmodule Blunder.Absinthe.Mixfile do
   defp deps do
     [
       {:absinthe, "~> 1.4"},
-      {:blunder, "~> 1.0", organization: "decisiv"},
+      {:blunder, "~> 1.0"},
       {:bugsnag, "~> 1.3", optional: true},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:dataloader, "~> 1.0", optional: true},
@@ -62,8 +62,7 @@ defmodule Blunder.Absinthe.Mixfile do
       maintainers: [
         "Trevor Little"
       ],
-      links: %{"Github" => repo_url()},
-      organization: "decisiv",
+      links: %{"Github" => repo_url()}
     ]
   end
 
@@ -82,6 +81,5 @@ defmodule Blunder.Absinthe.Mixfile do
     """
   end
 
-  defp repo_url, do: "https://github.decisiv.net/PlatformServices/blunder-absinthe"
-
+  defp repo_url, do: "https://github.com/Decisiv/blunder-absinthe"
 end

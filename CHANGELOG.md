@@ -45,11 +45,3 @@ Fix compiler warnings
 
 ## [0.1.0] 2018-02-13
 Initial extraction of logic from Blunder
-
-[1.1.1]: https://github.decisiv.net/PlatformServices/blunder-absinthe/tree/1.1.1
-[1.1.0]: https://github.decisiv.net/PlatformServices/blunder-absinthe/tree/1.1.0
-[1.0.1]: https://github.decisiv.net/PlatformServices/blunder-absinthe/tree/1.0.1
-[1.0.0]: https://github.decisiv.net/PlatformServices/blunder-absinthe/tree/1.0.0
-[0.1.2]: https://github.decisiv.net/PlatformServices/blunder-absinthe/tree/0.1.2
-[0.1.1]: https://github.decisiv.net/PlatformServices/blunder-absinthe/tree/0.1.1
-[0.1.0]: https://github.decisiv.net/PlatformServices/blunder-absinthe/tree/0.1.0
