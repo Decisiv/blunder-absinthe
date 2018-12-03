@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+## [1.4.0] 2018-03-12
+- added `error_processing_middlewares` opts to Blunder.Absinthe.add_error_handling
+
 ## [1.3.0] 2018-05-16
 - added opts to Blunder.Absinthe.add_error_handling
 

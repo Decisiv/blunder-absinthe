@@ -13,6 +13,26 @@ defmodule TestMiddleware do
   def time_out_call(_resolution, _config) do
     :timer.sleep(20)
   end
+
+  def bad_request(resolution, _config) do
+    resolution |> put_result({:error, :bad_request})
+  end
+end
+
+defmodule CustomErrorProcessingMiddleware do
+  import Blunder.Errors
+
+  deferror :bad_request, severity: :info
+
+  def call(resolution, _config) do
+    errors = for error <- resolution.errors do
+      case error do
+        :bad_request -> bad_request(summary: "Bad Request")
+        error -> error
+      end
+    end
+    %{resolution | errors: errors}
+  end
 end
 
 defmodule Blunder.AbsintheTest do
@@ -66,6 +86,30 @@ defmodule Blunder.AbsintheTest do
           }
         ]
       } = wrapped_middleware.(%Absinthe.Resolution{}, :ignored)
+    end
+
+    test "adds custom error handling" do
+      [wrapped_middleware | [middleware | _]] =
+        add_error_handling(
+          [{{TestMiddleware, :bad_request}, %{a: 1}}],
+          @field,
+          error_processing_middlewares: [CustomErrorProcessingMiddleware]
+        )
+
+      resolution = wrapped_middleware.(%Absinthe.Resolution{}, :ignored)
+      resolution = apply(middleware, :call, [resolution, nil])
+
+      assert %Absinthe.Resolution{
+        errors: [
+          %Blunder{
+            code: :bad_request,
+            summary: "Bad Request",
+            details: "",
+            severity: :info
+          }
+        ],
+        state: :resolved
+      } == resolution
     end
 
     test "{module, config} specs" do

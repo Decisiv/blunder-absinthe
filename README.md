@@ -14,6 +14,13 @@ Add Blunder error handling to your resolvers by letting Blunder wrap your middle
   end
 ```
 
+It is possible to add custom error handling middleware like:
+```elixir
+  def middleware(middleware, field, _object) do
+    Blunder.Absinthe.add_error_handling(middleware, field, error_processing_middlewares: [CustomErrorProcessingMiddleware])
+  end
+```
+
 This will catch all exceptions as well as provide special handling for any `%Blunder{}` errors returned from resolver functions.
 
 ### Start returning Blunder Errors

@@ -29,7 +29,7 @@ defmodule Blunder.Absinthe do
     Enum.map(
       middleware,
       &add_error_handling(&1, field, opts)
-    ) ++ [Blunder.Absinthe.ErrorProcessingMiddleware]
+    ) ++ Keyword.get(opts, :error_processing_middlewares, []) ++ [Blunder.Absinthe.ErrorProcessingMiddleware]
   end
 
   def add_error_handling({Absinthe.Middleware.MapGet, attr} = spec, %{identifier: attr}, _opts) do
