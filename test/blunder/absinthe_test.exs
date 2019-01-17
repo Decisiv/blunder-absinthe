@@ -62,7 +62,7 @@ defmodule Blunder.AbsintheTest do
         errors: [
           %Blunder{
             code: :unexpected_exception,
-            details: "funcation passed to trap_exceptions exceeded timeout of 10 ms",
+            details: "Operation: , Arguments: %{}, funcation passed to trap_exceptions exceeded timeout of 10 ms",
           }
         ]
       } = wrapped_middleware.(%Absinthe.Resolution{}, :ignored)

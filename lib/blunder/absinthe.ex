@@ -76,11 +76,14 @@ defmodule Blunder.Absinthe do
     case Blunder.trap_exceptions(fun, Keyword.merge(opts, blunder: blunder())) do
       {:error, error} ->
         Resolution.put_result(res, {:error, %{error | details:
-          "Operation: #{res.definition.name}, Arguments: #{inspect res.arguments}, #{error.details}"}})
+          "Operation: #{operation_name(res.definition)}, Arguments: #{inspect res.arguments}, #{error.details}"}})
       resolution ->
         resolution
     end
   end
+
+  defp operation_name(nil), do: ""
+  defp operation_name(definition), do: definition.name
 
   defp to_safely_async(fun, opts) do
     fn -> fun.() |> to_safe_async_middleware(opts) end
