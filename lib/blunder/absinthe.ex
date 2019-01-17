@@ -75,7 +75,8 @@ defmodule Blunder.Absinthe do
   defp resolve_safely(fun, res, opts) do
     case Blunder.trap_exceptions(fun, Keyword.merge(opts, blunder: blunder())) do
       {:error, error} ->
-        Resolution.put_result(res, {:error, error})
+        Resolution.put_result(res, {:error, %{error | details:
+          "Operation: #{res.definition.name}, Arguments: #{inspect res.arguments}, #{error.details}"}})
       resolution ->
         resolution
     end
