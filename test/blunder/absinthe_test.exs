@@ -39,8 +39,8 @@ defmodule Blunder.AbsintheTest do
 
       # catches errors
       not_a_map = []
-      assert %Absinthe.Resolution{errors: [%Blunder{original_error: %BadMapError{}}]} =
-        wrapped_middleware.(%Absinthe.Resolution{source: not_a_map}, [])
+      assert %Absinthe.Resolution{errors: [error]} = wrapped_middleware.(%Absinthe.Resolution{source: not_a_map}, [])
+      assert error[:original_error] == %BadMapError{term: []}
     end
 
     test "{{module, function}, config} specs" do

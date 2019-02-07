@@ -73,13 +73,27 @@ defmodule Blunder.Absinthe do
     opts :: [timeout_ms: number]
   ) :: Resolution.t
   defp resolve_safely(fun, res, opts) do
-    case Blunder.trap_exceptions(fun, Keyword.merge(opts, blunder: blunder())) do
-      {:error, error} ->
-        Resolution.put_result(res, {:error, %{error | details:
-          "Operation: #{operation_name(res.definition)}, Arguments: #{inspect res.arguments}, #{error.details}"}})
-      resolution ->
-        resolution
+
+    if res.source == %{} || res.source == nil do
+      case Blunder.trap_exceptions(fun, Keyword.merge(opts, blunder: blunder())) do
+        {:error, error} ->
+          Resolution.put_result(res, {:error, %{error | details:
+            "Operation: #{operation_name(res.definition)}, Arguments: #{inspect res.arguments}, #{error.details}"}})
+        resolution ->
+          resolution
+      end
+    else
+      invoke(fun, res)
     end
+  end
+
+  def invoke(fun, res) do
+    fun.()
+  rescue
+    error ->
+      detailed_error = [details: "Operation: #{operation_name(res.definition)}, Arguments: #{inspect res.arguments}",
+        original_error: error, stacktrace:  System.stacktrace()]
+      Resolution.put_result(res, {:error, detailed_error})
   end
 
   defp operation_name(nil), do: ""
