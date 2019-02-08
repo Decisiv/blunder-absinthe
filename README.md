@@ -15,6 +15,7 @@ Add Blunder error handling to your resolvers by letting Blunder wrap your middle
 ```
 
 This will catch all exceptions as well as provide special handling for any `%Blunder{}` errors returned from resolver functions.
+By default only the root field is wrapped. To wrap all field it is necessary to add blunder_fields: true to options.  
 
 ### Start returning Blunder Errors
 

@@ -74,7 +74,7 @@ defmodule Blunder.Absinthe do
   ) :: Resolution.t
   defp resolve_safely(fun, res, opts) do
 
-    if res.source == %{} || res.source == nil do
+    if res.source == %{} || res.source == nil || opts[:blunder_fields] do
       case Blunder.trap_exceptions(fun, Keyword.merge(opts, blunder: blunder())) do
         {:error, error} ->
           Resolution.put_result(res, {:error, %{error | details:
