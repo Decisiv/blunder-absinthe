@@ -10,6 +10,9 @@ defmodule Blunder.Absinthe do
   Each middleware will be wrapped in a `&Blunder.trap_exceptions/2` call and
   `Blunder.Absinthe.ErrorProcessingMiddleware` appended to the end of the stack
   to handle those and any other errors.
+  By default only the resolvers for root queries & mutations are wrapped with the error handling.
+  To wrap all resolvers and stop errors deeper in the tree instead of letting
+  them bubble up tp the root, add `wrap_all_resolvers: true` to the options.
 
   Call it in your Schema in your `&middleware/3` callback like this:
   ```elixir
@@ -74,7 +77,7 @@ defmodule Blunder.Absinthe do
   ) :: Resolution.t
   defp resolve_safely(fun, res, opts) do
 
-    if res.source == %{} || res.source == nil || opts[:blunder_fields] do
+    if res.source == %{} || res.source == nil || opts[:wrap_all_resolvers] do
       case Blunder.trap_exceptions(fun, Keyword.merge(opts, blunder: blunder())) do
         {:error, error} ->
           Resolution.put_result(res, {:error, %{error | details:

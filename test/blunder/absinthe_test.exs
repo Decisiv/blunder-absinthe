@@ -45,7 +45,7 @@ defmodule Blunder.AbsintheTest do
 
     test "MapGet middleware with different field not treated like default resolver when blunder fields" do
       default_middleware = {Absinthe.Middleware.MapGet, :different_attr_name}
-      [wrapped_middleware | _] = add_error_handling([default_middleware], @field, [blunder_fields: true])
+      [wrapped_middleware | _] = add_error_handling([default_middleware], @field, [wrap_all_resolvers: true])
 
       # Retruns a "safe" function that does the MapGet
       assert %Absinthe.Resolution{value: 42} =
