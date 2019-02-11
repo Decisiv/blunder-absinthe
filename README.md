@@ -15,6 +15,7 @@ Add Blunder error handling to your resolvers by letting Blunder wrap your middle
 ```
 
 This will catch all exceptions as well as provide special handling for any `%Blunder{}` errors returned from resolver functions.
+By default only the resolvers for root queries & mutations are wrapped with the error handling. To wrap all resolvers and stop errors deeper in the tree instead of letting them bubble up tp the root, add `wrap_all_resolvers: true` to the options.  
 
 ### Start returning Blunder Errors
 
